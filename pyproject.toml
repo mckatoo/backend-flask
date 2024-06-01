@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "ikatoo-backend"
+version = "0.1.0"
+description = ""
+authors = ["Milton Carlos Katoo <mckatoo@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+pytest = "^8.2.1"
+pytest-watch = "^4.2.0"
+camel-converter = "^3.1.2"
+python-decouple = "^3.8"
+peewee = "^3.17.5"
+flask-peewee = "^3.0.6"
+sqlalchemy = "^2.0.30"
+pytest-flask = "^1.3.0"
+cloudinary = "^1.40.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
