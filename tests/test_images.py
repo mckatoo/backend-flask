@@ -1,6 +1,11 @@
 import io
+from unittest import mock
 
 
+@mock.patch(
+    "cloudinary.uploader.upload",
+    # {"public_id": "test_public_id", "secure_url": "test_secure_url"},
+)
 def test_send_image_returning_status_201_and_json(client):
     data = {"name": "this is a name", "age": 12}
     data = {key: str(value) for key, value in data.items()}

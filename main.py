@@ -2,9 +2,9 @@ from flask import Flask
 
 from app.routes import app_routes
 from configurations.db_config import load_db_config
-from configurations.envs import DEV_ENV
-from pages.routes import page_routes
+from configurations.envs_config import DEV_ENV
 from images.routes import image_routes
+from pages.routes import page_routes
 
 app = Flask("web_app")
 

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
-from configurations.envs import IMAGE_ALLOWED_EXTENSIONS
+from configurations.cloudinary_config import file_uploader
+from configurations.envs_config import IMAGE_ALLOWED_EXTENSIONS
 
 image_routes = Blueprint("image_routes", __name__)
 
@@ -23,18 +24,20 @@ def send_image():
         return jsonify({"error": "No file part"}), 400
     file = request.files["file"]
 
-    if file.filename == "":
+    if not file or file.filename == "":
         return jsonify({"error": "No selected file"}), 400
 
     if file and not allowed_file(file.filename):
         return jsonify({"error": "Not allowed file"})
 
-    # cloudinary implementation
+    response = file_uploader(file)
+    public_id = response["public_id"]
+    secure_url = response["secure_url"]
 
     return jsonify(
         {
-            "url": "secure_url",
-            "publicId": "public_id",
+            "url": secure_url,
+            "publicId": public_id,
         }
     ), 201
 
