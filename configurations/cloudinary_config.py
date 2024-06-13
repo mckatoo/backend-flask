@@ -1,6 +1,6 @@
 from werkzeug.datastructures import FileStorage
 import cloudinary
-from cloudinary import uploader
+from cloudinary import uploader, api
 
 from configurations.envs_config import (
     CLOUDINARY_APIKEY,
@@ -19,3 +19,9 @@ cloudinary.config(
 
 def file_uploader(image: FileStorage):
     return uploader.upload(image, folder=CLOUDINARY_FOLDER)
+
+def get_file(public_id):
+    try:
+        return api.resource(public_id)
+    except Exception as e:
+        raise e

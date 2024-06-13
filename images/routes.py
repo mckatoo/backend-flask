@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from configurations.cloudinary_config import file_uploader
+from configurations.cloudinary_config import file_uploader, get_file
 from configurations.envs_config import IMAGE_ALLOWED_EXTENSIONS
 
 image_routes = Blueprint("image_routes", __name__)
@@ -15,7 +15,13 @@ def allowed_file(filename):
 
 @image_routes.route("", methods=["GET"])
 def get_image():
-    return jsonify({"url": "url"}), 200
+    data = request.json
+    if not data or not data["id"]:
+        return jsonify({"error": "No id"}), 400
+
+    result = get_file(data["id"])
+    
+    return jsonify({"url": result["url"]}), 200
 
 
 @image_routes.route("", methods=["POST"])
@@ -44,4 +50,11 @@ def send_image():
 
 @image_routes.route("", methods=["DELETE"])
 def delete_image():
+    # public_id = request.data["id"]
+    # try:
+    #     cloudinary.uploader.destroy(public_id)
+    # except Exception as e:
+    #     if isinstance(e, cloudinary.api.NotFound):
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
+    #     raise e
     return "", 204
