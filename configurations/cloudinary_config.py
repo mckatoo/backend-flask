@@ -17,11 +17,17 @@ cloudinary.config(
 )
 
 
-def file_uploader(image: FileStorage):
+def image_uploader(image: FileStorage):
     return uploader.upload(image, folder=CLOUDINARY_FOLDER)
 
-def get_file(public_id):
+def get_resource(public_id):
     try:
         return api.resource(public_id)
+    except Exception as e:
+        raise e
+
+def destroy(public_id):
+    try:
+        uploader.destroy(public_id)
     except Exception as e:
         raise e

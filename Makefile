@@ -3,3 +3,6 @@ test-watch:
 
 test:
 	pytest tests/ -vvs
+
+run:
+	flask --app main.py run

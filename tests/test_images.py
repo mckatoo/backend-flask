@@ -38,5 +38,8 @@ def test_get_image_returning_status_200_and_json(client):
 
 
 def test_delete_image_returning_status_204_and_no_content(client):
-    response = client.delete("api/image")
+    uploader.destroy = Mock()
+    mocked_request = json.dumps(dict(id="mocked_public_id"))
+    response = client.delete("api/image", data=mocked_request, content_type="application/json")
+
     assert response.status_code == 204
