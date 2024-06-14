@@ -37,7 +37,7 @@ def send_image():
         return jsonify({"error": "No selected file"}), 400
 
     if file and not allowed_file(file.filename):
-        return jsonify({"error": "Not allowed file"})
+        return jsonify({"error": "Not allowed file"}), 400
 
     response = image_uploader(file)
     public_id = response["public_id"]
@@ -53,9 +53,9 @@ def send_image():
 
 @image_routes.route("", methods=["DELETE"])
 def delete_image():
-    print('request.json ===>', request.json)
+    print("request.json ===>", request.json)
     if request.json and "id" in request.json:
-        public_id:str = request.json["id"]
+        public_id: str = request.json["id"]
         destroy(public_id)
         return "", 204
 

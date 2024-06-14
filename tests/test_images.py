@@ -2,8 +2,8 @@ import io
 import json
 from unittest.mock import Mock
 
-import cloudinary.uploader as uploader
 import cloudinary.api as api
+import cloudinary.uploader as uploader
 
 
 def test_send_image_returning_status_201_and_json(client):
@@ -25,6 +25,35 @@ def test_send_image_returning_status_201_and_json(client):
     assert response.status_code == 201
 
 
+def test_send_image_without_image_returning_status_400_and_json(client):
+    response = client.post("api/image", content_type="multipart/form-data")
+
+    assert response.status_code == 400
+    assert response.json == {"error": "No file part"}
+
+
+def test_send_image_with_empty_image_returning_status_400_and_json(client):
+    data = {"file": (io.BytesIO(b"some initial text data"), "")}
+    response = client.post(
+        "api/image", data=data, content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "No selected file"}
+
+
+def test_send_image_with_not_allowed_image_returning_status_400_and_json(
+    client,
+):
+    data = {"file": (io.BytesIO(b"some initial text data"), "image.txt")}
+    response = client.post(
+        "api/image", data=data, content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "Not allowed file"}
+
+
 def test_get_image_returning_status_200_and_json(client):
     mocked_request = json.dumps(dict(id="mocked_public_id"))
     mocked_response = {"url": "http://mocked.com/response.jpg"}
@@ -40,6 +69,8 @@ def test_get_image_returning_status_200_and_json(client):
 def test_delete_image_returning_status_204_and_no_content(client):
     uploader.destroy = Mock()
     mocked_request = json.dumps(dict(id="mocked_public_id"))
-    response = client.delete("api/image", data=mocked_request, content_type="application/json")
+    response = client.delete(
+        "api/image", data=mocked_request, content_type="application/json"
+    )
 
     assert response.status_code == 204
