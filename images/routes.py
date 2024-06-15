@@ -57,10 +57,13 @@ def send_image():
 
 @image_routes.route("", methods=["DELETE"])
 def delete_image():
-    print("request.json ===>", request.json)
-    if request.json and "id" in request.json:
+    try:
+        if not request.json or "id" not in request.json:
+            raise "400"
         public_id: str = request.json["id"]
         destroy(public_id)
         return "", 204
-
-    return jsonify({"error": "No id"}), 400
+    except Exception as e:
+        if str(e).__contains__("400"):
+            return jsonify({"error": "No id"}), 400
+        return jsonify({"error": "Unexpected error"}), 500
