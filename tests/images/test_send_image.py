@@ -20,3 +20,29 @@ def test_send_image_returning_status_201_and_json(client):
         "url": mocked_result["secure_url"],
     }
     assert response.status_code == 201
+
+def test_send_without_image_returning_status_400_and_json(client):
+    response = client.post(
+        "api/image", content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "No file part"}
+
+def test_send_invalid_image_returning_status_400_and_json(client):
+    mocked_data = {"file": (io.BytesIO(b"some initial text data"), "invalid.image")}
+    response = client.post(
+        "api/image",data=mocked_data, content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "Not allowed file"}
+
+def test_send_empty_image_returning_status_400_and_json(client):
+    mocked_data = {"file": (io.BytesIO(b"some initial text data"), "")}
+    response = client.post(
+        "api/image",data=mocked_data, content_type="multipart/form-data"
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "No selected file"}
