@@ -19,12 +19,16 @@ def allowed_file(filename):
 
 @image_routes.route("", methods=["GET"])
 def get_image():
-    if request.json and "id" in request.json:
+    try:
         public_id: str = request.json["id"]
         result = get_resource(public_id)
         return jsonify({"url": result["url"]}), 200
-
-    return jsonify({"error": "No id"}), 400
+    except Exception as e:
+        if str(e).__contains__("404"):
+            return jsonify({"error": "Image not found"}), 404
+        if str(e).__contains__("400"):
+            return jsonify({"error": "No id"}), 400
+        return jsonify({"error": "Unexpected error"}), 500
 
 
 @image_routes.route("", methods=["POST"])
@@ -53,9 +57,9 @@ def send_image():
 
 @image_routes.route("", methods=["DELETE"])
 def delete_image():
-    print('request.json ===>', request.json)
+    print("request.json ===>", request.json)
     if request.json and "id" in request.json:
-        public_id:str = request.json["id"]
+        public_id: str = request.json["id"]
         destroy(public_id)
         return "", 204
 
