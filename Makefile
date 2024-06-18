@@ -6,3 +6,6 @@ test:
 
 run:
 	flask --app main.py run
+
+run-debug:
+	flask --debug --app main.py run

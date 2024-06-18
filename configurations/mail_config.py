@@ -10,12 +10,12 @@ from configurations.envs_config import (
 from email.message import EmailMessage
 
 
-def send_mail(sender, recipient, subject, message):
+def send_mail(sender, recipients, subject, message):
     msg = EmailMessage()
     msg.set_content(message)
     msg["Subject"] = subject
     msg["From"] = sender
-    msg["To"] = recipient
+    msg["To"] = recipients
     s = smtplib.SMTP(host=SMTP_SERVER_ADDRESS, port=SMTP_SERVER_PORT)
     with s:
         if SMTP_START_TLS:

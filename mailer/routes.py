@@ -7,12 +7,12 @@ mailer_routes = Blueprint("mailer", __name__)
 @mailer_routes.route("", methods=["POST"])
 def send_email():
     sender: str = request.json["from"]
-    recipient: str = request.json["to"]
+    recipients: str = request.json["to"]
     message: str = request.json["message"]
     subject: str = "Email send from ikatoo."
 
     # save email on db and return id
 
-    send_mail(sender=sender, recipient=recipient, message=message, subject=subject)
+    send_mail(sender=sender, recipients=recipients, message=message, subject=subject)
 
     return jsonify({"id": "mocked_id"}), 201
