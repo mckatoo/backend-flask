@@ -1,0 +1,35 @@
+@baseUrl = {{$dotenv baseUrl}}
+@accessToken = {{login.response.body.$.accessToken}}
+
+###
+# @name login
+POST {{baseUrl}}/api/auth/sign-in HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "mckatoo",
+  "password": "test"
+}
+
+###
+# @name create_project
+POST {{baseUrl}}/api/project/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "testeklajsdfs alsdfj",
+  "description": "ajsdfl desc",
+  "snapshot": "http://sjdfkdj.com/asldfj.jpg",
+  "repositoryLink": "http://alskkajsdflsf.com/lsjdfjsdf.jpg"
+}
+
+###
+# @name list_all
+GET {{baseUrl}}/api/projects/ HTTP/1.1
+Content-Type: application/json
+
+###
+# @name get_by_id
+GET {{baseUrl}}/api/project/4 HTTP/1.1
+Content-Type: application/json
