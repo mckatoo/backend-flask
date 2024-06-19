@@ -1,10 +1,8 @@
 import json
-from unittest.mock import Mock
-import configurations as conf
-
+from unittest.mock import patch
 
 def test_send_mail_returning_status_201_and_json(client):
-    conf.mail_config = Mock(return_value="")
+    patch("configurations.mail_config.send_mail")
     mocked_request = json.dumps(
         {
             "from": "sender@mail.com",
