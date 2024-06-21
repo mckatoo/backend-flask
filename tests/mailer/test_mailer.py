@@ -1,8 +1,9 @@
 import json
 from unittest.mock import patch
 
-def test_send_mail_returning_status_201_and_json(client):
-    patch("configurations.mail_config.send_mail")
+
+@patch("smtplib.SMTP")
+def test_send_mail_returning_status_201_and_json(mock, client):
     mocked_request = json.dumps(
         {
             "from": "sender@mail.com",
@@ -17,7 +18,14 @@ def test_send_mail_returning_status_201_and_json(client):
     assert response.status_code == 201
 
 
-# def test_send_mail_with_invalid_data_returning_status_404_and_json(client):
-#     response = client.post("api/mailer", content_type="application/json")
+def test_send_mail_with_invalid_data_returning_status_404_and_json(client):
+    mocked_request = json.dumps(
+        {
+            "invalid": "data",
+        }
+    )
+    response = client.post(
+        "api/mailer", data=mocked_request, content_type="application/json"
+    )
 
-#     assert response.status_code == 201
+    assert response.status_code == 400

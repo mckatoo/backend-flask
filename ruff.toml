@@ -1,6 +1,7 @@
 exclude = [
 "migrations",
-"settings.py"
+"settings.py",
+".vscode"
 ]
 
 line-length = 80
