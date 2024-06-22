@@ -17,8 +17,6 @@ def send_email():
         message: str = request.json["message"]
         subject: str = "Email send from ikatoo."
 
-        # save email on db and return id
-
         send_mail(
             sender=sender,
             recipients=recipients,

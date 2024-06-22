@@ -18,7 +18,7 @@ def test_send_mail_returning_status_201_and_json(mock, client):
     assert response.status_code == 201
 
 
-def test_send_mail_with_invalid_data_returning_status_404_and_json(client):
+def test_send_mail_with_invalid_data_returning_status_400_and_json(client):
     mocked_request = json.dumps(
         {
             "invalid": "data",
@@ -29,3 +29,12 @@ def test_send_mail_with_invalid_data_returning_status_404_and_json(client):
     )
 
     assert response.status_code == 400
+    assert response.json == {"error": "Bad Request"}
+
+def test_send_mail_without_data_returning_status_400_and_json(client):
+    response = client.post(
+        "api/mailer", content_type="application/json"
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "Bad Request"}
