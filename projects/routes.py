@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 from database.models.projects import Projects
+from camel_converter import dict_to_camel
+from playhouse.shortcuts import model_to_dict
 
 projects_routes = Blueprint("projects_routes", __name__)
 project_routes = Blueprint("project_routes", __name__)
@@ -25,7 +27,8 @@ def create_project():
 #  path("project/<int:pk>", GetUpdateDeleteProject.as_view()),
 @project_routes.route("/<int:id>", methods=["GET"])
 def get_project(id: int):
-    return jsonify({}), 200
+    project = Projects.get_by_id(id)
+    return jsonify(dict_to_camel(model_to_dict(project))), 200
 
 
 #     re_path("^projects/?$", ListProjects.as_view()),
