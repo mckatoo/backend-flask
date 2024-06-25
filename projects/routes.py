@@ -19,8 +19,7 @@ def create_project():
         return jsonify({"error": "Unknown Error"}), 500
 
 
-#  path("project/<int:pk>", GetUpdateDeleteProject.as_view()),
-@project_routes.route("", methods=["GET", "PATCH"])
+@project_routes.route("", methods=["GET", "PATCH", "DELETE"])
 def without_id():
     return jsonify({"error": "Bad Request"}), 400
 
@@ -46,7 +45,7 @@ def list_projects():
         return jsonify(projects), 200
     except Exception as e:
         contain = str(e).lower().__contains__
-        if contain('not') and contain('found'):
+        if contain("not") and contain("found"):
             return jsonify({"error": "Not Found"}), 404
         return jsonify({"error": "Unknown Error"}), 500
 
@@ -63,3 +62,14 @@ def update_project(id):
         if contain("not") and contain("found"):
             return jsonify({"error": "Not Found"}), 404
         return jsonify({"error": "Unkown Error"}), 500
+
+
+@project_routes.route("/<id>", methods=["DELETE"])
+def delete_project(id):
+    try:
+        Projects.delete_by_id(id)
+        return jsonify({}), 204
+    except Exception as e:
+        if str(e).lower().__contains__('400'):
+            return jsonify({"error": "Bad Request"}), 400
+        return jsonify({"error": "Unknown Error"}), 500
