@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, request
-from database.models.projects import Projects
 from camel_converter import dict_to_camel, dict_to_snake
+from flask import Blueprint, jsonify, request
 from playhouse.shortcuts import model_to_dict
+
+from database.models.projects import Projects
 
 projects_routes = Blueprint("projects_routes", __name__)
 project_routes = Blueprint("project_routes", __name__)
@@ -38,6 +39,18 @@ def get_project(id):
         return jsonify({"error": "Unkown Error"}), 500
 
 
+@projects_routes.route("", methods=["GET"])
+def list_projects():
+    try:
+        projects = list(Projects.select().dicts())
+        return jsonify(projects), 200
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain('not') and contain('found'):
+            return jsonify({"error": "Not Found"}), 404
+        return jsonify({"error": "Unknown Error"}), 500
+
+
 @project_routes.route("/<id>", methods=["PATCH"])
 def update_project(id):
     try:
@@ -50,6 +63,3 @@ def update_project(id):
         if contain("not") and contain("found"):
             return jsonify({"error": "Not Found"}), 404
         return jsonify({"error": "Unkown Error"}), 500
-
-
-#     re_path("^projects/?$", ListProjects.as_view()),
