@@ -1,8 +1,9 @@
-from peewee import Model, CharField, TextField, DateField, ManyToManyField
-from database import db
 from datetime import datetime
 
-# from database.models.skills import Skills
+from peewee import CharField, DateField, Model, TextField
+
+from database import db
+
 
 class Projects(Model):
     class Meta:
@@ -15,4 +16,3 @@ class Projects(Model):
     repository_link = CharField(null=False)
     start = DateField(default=datetime.now().date())
     last_update = DateField(default=datetime.now().date())
-    # skills = ManyToManyField(Skills)

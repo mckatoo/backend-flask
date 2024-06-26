@@ -7,6 +7,7 @@ from images.routes import image_routes
 from pages.routes import page_routes
 from mailer.routes import mailer_routes
 from projects.routes import projects_routes, project_routes
+from skills.routes import skills_routes, skill_routes
 
 app = Flask("web_app")
 
@@ -18,5 +19,7 @@ app.register_blueprint(image_routes, url_prefix="/api/image")
 app.register_blueprint(mailer_routes, url_prefix="/api/mailer")
 app.register_blueprint(projects_routes, url_prefix="/api/projects")
 app.register_blueprint(project_routes, url_prefix="/api/project")
+app.register_blueprint(skills_routes, url_prefix="/api/skills")
+app.register_blueprint(skill_routes, url_prefix="/api/skill")
 
 app.config["DEBUG"] = DEV_ENV
