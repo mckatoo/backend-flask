@@ -6,6 +6,7 @@ from playhouse.shortcuts import model_to_dict
 from database.models.projects import Projects
 from database.models.skills import Skills
 from database.models.skills_projects import SkillsProjects
+from tests.utils import remove_id
 
 
 def test_get_skill_and_your_projects(client):
@@ -33,12 +34,12 @@ def test_get_skill_and_your_projects(client):
 
 def test_get_all_skills_without_projects(client):
     random_id = uuid1()
-    Skills.delete()
+    Skills.delete().execute()
     skills = [Skills(title=f"Test skill {random_id} - {i}") for i in range(5)]
-    skills_list = [model_to_dict(skill) for skill in skills]
+    skills_list = [remove_id(model_to_dict(skill)) for skill in skills]
     Skills.bulk_create(skills)
     response = client.get("api/skills", content_type="application/json")
-    without_id = list(map(lambda skill: del(skill["id"]), response.json))
+    without_id = list(map(remove_id, response.json))
 
     assert response.status_code == 200
     assert without_id == skills_list

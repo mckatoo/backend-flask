@@ -4,6 +4,7 @@ from camel_converter import dict_to_camel
 from playhouse.shortcuts import dict_to_model, model_to_dict
 
 from database.models.projects import Projects
+from tests.utils import remove_id
 
 
 def test_get_project_by_id_returning_status_200_and_json(client):
@@ -57,14 +58,13 @@ def test_list_all_projects(client):
     Projects.bulk_create(projects_list)
     projects_list = list(map(model_to_dict, projects_list))
     response = client.get("api/projects", content_type="application/json")
-    def remove_id(project):
-        project.pop("id")
-        return project
+
     response_list = list(map(remove_id, response.json))
     projects_list = list(map(remove_id, projects_list))
 
     assert response.status_code == 200
     assert response_list == projects_list
+
 
 def test_empty_list_when_no_product(client):
     Projects.delete().execute()
