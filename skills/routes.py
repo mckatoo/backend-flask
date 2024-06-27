@@ -31,13 +31,26 @@ def get_skill_by_id(id):
         .dicts()
     )
     projects = [
-        dict_to_camel(model_to_dict(Projects.get_by_id(skill_project["project_id"])))
+        dict_to_camel(
+            model_to_dict(Projects.get_by_id(skill_project["project_id"]))
+        )
         for skill_project in skills_projects
     ]
 
     return jsonify(
         {**dict_to_camel(model_to_dict(skill)), "projects": projects}
     ), 200
+
+
+@skills_routes.route("", methods=["GET"])
+def list_all_skill():
+    try:
+        skills = list(Skills.select().dicts())
+        return jsonify(skills), 200
+    except Exception as e:
+        if str(e).lower().__contains__("400"):
+            return jsonify({"error": "Bad Request"})
+        return jsonify({"error": "Unknown Error"})
 
 
 # re_path("^skill/<int:pk>/", GetUpdateDeleteSkill.as_view()),

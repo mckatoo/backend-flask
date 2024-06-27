@@ -29,3 +29,16 @@ def test_get_skill_and_your_projects(client):
 
     assert response.status_code == 200
     assert response.json == {**model_to_dict(skill), "projects": projects}
+
+
+def test_get_all_skills_without_projects(client):
+    random_id = uuid1()
+    Skills.delete()
+    skills = [Skills(title=f"Test skill {random_id} - {i}") for i in range(5)]
+    skills_list = [model_to_dict(skill) for skill in skills]
+    Skills.bulk_create(skills)
+    response = client.get("api/skills", content_type="application/json")
+    without_id = list(map(lambda skill: del(skill["id"]), response.json))
+
+    assert response.status_code == 200
+    assert without_id == skills_list
