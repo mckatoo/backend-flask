@@ -22,6 +22,11 @@ def create_skill():
         return jsonify({"error": "Unknown Error"}), 500
 
 
+@skill_routes.route("", methods=["GET", "PATCH", "DELETE"])
+def without_id():
+    return jsonify({"error": "Bad Request"}), 400
+
+
 @skill_routes.route("/<id>", methods=["GET"])
 def get_skill_by_id(id):
     skill = Skills.get_by_id(id)
@@ -53,5 +58,26 @@ def list_all_skill():
         return jsonify({"error": "Unknown Error"})
 
 
-# re_path("^skill/<int:pk>/", GetUpdateDeleteSkill.as_view()),
-# re_path("^skills/?$", ListSkills.as_view()),
+@skill_routes.route("/<id>", methods=["PATCH"])
+def update_skill(id):
+    try:
+        Skills.update(**request.json).where(Skills.id == id).execute()
+        return jsonify({}), 204
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain("400"):
+            return jsonify({"error": "Bad Request"}), 400
+        if contain("not") and contain("found"):
+            return jsonify({"error": "Not Found"}), 404
+        return jsonify({"error": "Unkown Error"}), 500
+
+
+@skill_routes.route("/<id>", methods=["DELETE"])
+def delete_skill(id):
+    try:
+        Skills.delete_by_id(id)
+        return jsonify({}), 204
+    except Exception as e:
+        if str(e).lower().__contains__("400"):
+            return jsonify({"error": "Bad Request"}), 400
+        return jsonify({"error": "Unknown Error"}), 500
