@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 from flask import Blueprint, jsonify, request
@@ -28,18 +28,16 @@ def sign_in():
         access_token = jwt.encode(
             {
                 "id": user.id,
-                "exp": datetime.now() + timedelta(minutes=10),
+                "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=10),
             },
             envs_config.SECRET_KEY,
-            algorithm="HS256",
         )
         refresh_token = jwt.encode(
             {
                 "id": user.id,
-                "exp": datetime.now() + timedelta(minutes=60),
+                "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=60),
             },
             envs_config.SECRET_KEY,
-            algorithm="HS256",
         )
 
         return jsonify(

@@ -23,8 +23,12 @@ def test_success_on_signin(client):
     access_token = response.json["accessToken"]
     refresh_token = response.json["refreshToken"]
     access_token_payload = jwt.decode(
-        access_token, envs_config.SECRET_KEY, algorithms=["HS256"]
+        access_token, envs_config.SECRET_KEY, algorithms="HS256"
+    )
+    refresh_token_payload = jwt.decode(
+        refresh_token, envs_config.SECRET_KEY, algorithms="HS256"
     )
 
     assert response.status_code == 200
-    # assert access_token_payload == created_user.id
+    assert access_token_payload["id"] == created_user.id
+    assert refresh_token_payload["id"] == created_user.id
