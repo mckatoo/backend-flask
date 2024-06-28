@@ -11,6 +11,8 @@ project_routes = Blueprint("project_routes", __name__)
 @project_routes.route("", methods=["POST"])
 def create_project():
     try:
+        if not request.json:
+            raise Exception("400")
         project = Projects.create(**dict_to_snake(request.json))
         return jsonify({"id": project.id}), 201
     except Exception as e:
@@ -70,6 +72,6 @@ def delete_project(id):
         Projects.delete_by_id(id)
         return jsonify({}), 204
     except Exception as e:
-        if str(e).lower().__contains__('400'):
+        if str(e).lower().__contains__("400"):
             return jsonify({"error": "Bad Request"}), 400
         return jsonify({"error": "Unknown Error"}), 500
