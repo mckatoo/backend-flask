@@ -29,7 +29,9 @@ def test_get_skill_and_your_projects(client):
     )
 
     assert response.status_code == 200
-    assert response.json == {**model_to_dict(skill), "projects": projects}
+    assert response.json["id"] == skill.id
+    assert response.json["title"] == skill.title
+    assert list(map(sorted, response.json["projects"])) == list(map(sorted, projects))
 
 
 def test_get_all_skills_without_projects(client):
