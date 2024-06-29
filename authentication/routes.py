@@ -9,12 +9,6 @@ from database.models.users import Users
 auth_routes = Blueprint("auth_routes", __name__)
 
 
-# re_path("^sign-in/?$", sign_in),
-# re_path("^sign-out/?$", sign_out),
-# re_path("^verify-token/?$", verify),
-# re_path("^refresh/?$", verify),
-
-
 @auth_routes.route("/sign-in", methods=["POST"])
 def sign_in():
     try:
@@ -47,6 +41,11 @@ def sign_in():
         if str(e).__contains__("400"):
             return jsonify({"error": "Bad Request"}), 400
         return jsonify({"error": "Unauthorized"}), 401
+
+
+# re_path("^sign-out/?$", sign_out),
+# re_path("^verify-token/?$", verify),
+# re_path("^refresh/?$", verify),
 
 
 # @api_view(["POST"])
