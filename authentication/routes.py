@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, request
 
 from configurations import envs_config
 from database.models.users import Users
+from database.models.blacklist import Blacklist
 
 auth_routes = Blueprint("auth_routes", __name__)
 
@@ -43,8 +44,17 @@ def sign_in():
         return jsonify({"error": "Unauthorized"}), 401
 
 
-# re_path("^sign-out/?$", sign_out),
-# re_path("^verify-token/?$", verify),
+@auth_routes.route("/sign-out", methods=["POST"])
+def sign_out():
+    access_token = str(request.headers["authentication"]).removeprefix(
+        "Bearer "
+    )
+    Blacklist.create(token=access_token)
+
+    return jsonify({}), 200
+
+
+# re_path("^verify-token/?$", verify), GET
 # re_path("^refresh/?$", verify),
 
 
