@@ -10,6 +10,9 @@ from tests.utils import remove_id
 
 
 def test_get_skill_and_your_projects(client):
+    Skills.delete().execute()
+    Projects.delete().execute()
+    SkillsProjects.delete().execute()
     random_id = uuid1()
     skill = Skills.create(title=f"Title {random_id}")
     projects = []
@@ -27,11 +30,13 @@ def test_get_skill_and_your_projects(client):
     response = client.get(
         f"api/skill/{skill.id}", content_type="application/json"
     )
+    response_projects = list(map(sorted, response.json["projects"]))
+    expected_projects = list(map(sorted, projects))
 
     assert response.status_code == 200
     assert response.json["id"] == skill.id
     assert response.json["title"] == skill.title
-    assert list(map(sorted, response.json["projects"])) == list(map(sorted, projects))
+    assert response_projects == expected_projects
 
 
 def test_get_all_skills_without_projects(client):
