@@ -18,11 +18,12 @@ def verify_token_middleware(func):
             )
             in_blacklist = bool(Blacklist.get_or_none(token=token))
             is_expired = (
-                decoded_token["exp"] > datetime.now(tz=timezone.utc).timestamp()
+                decoded_token["exp"] < datetime.now(tz=timezone.utc).timestamp()
             )
 
             if not in_blacklist and not is_expired:
                 return func(*args, **kargs)
+            return jsonify({"error": "Unauthorized"}), 401
         except Exception as e:
             if (
                 str(e).__contains__("HTTP_AUTHENTICATION")
