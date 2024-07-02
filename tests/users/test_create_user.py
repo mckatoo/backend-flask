@@ -23,8 +23,33 @@ def test_create_user_returning_user_id_and_201_status_code(client):
 
 
 def test_error_400_when_request_creation_without_data(client):
-    assert False
+    existent_user_data = generate_mocked_user_data()
+    existent_user = Users.create(**existent_user_data)
+    access_token, _ = existent_user.generate_tokens()
+    response = client.post(
+        "api/user",
+        headers={"authentication": f"Bearer {access_token}"},
+        content_type="application/json",
+    )
+    
+    assert response.status_code == 400
+    assert response.json == {"error": "Bad Request"}
 
 
 def test_error_400_when_request_creation_with_invalid_data(client):
-    assert False
+    mocked_user_data = generate_mocked_user_data()
+    mocked_user_data.pop("email")
+    mocked_user_data["invalid"] = "data"
+    existent_user_data = generate_mocked_user_data()
+    existent_user = Users.create(**existent_user_data)
+    access_token, _ = existent_user.generate_tokens()
+
+    response = client.post(
+        "api/user",
+        data=json.dumps(mocked_user_data),
+        headers={"authentication": f"Bearer {access_token}"},
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert response.json == {"error": "Bad Request"}
