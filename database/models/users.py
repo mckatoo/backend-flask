@@ -37,7 +37,7 @@ class Users(Model):
         refresh_token = jwt.encode(
             {
                 "id": self.id,
-                "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=10),
+                "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=60),
             },
             envs_config.SECRET_KEY,
         )
