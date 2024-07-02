@@ -1,20 +1,10 @@
-from datetime import datetime, timedelta, timezone
-from uuid import uuid1
-
-import jwt
-
-from configurations import envs_config
 from database.models.blacklist import Blacklist
 from database.models.users import Users
+from tests.utils import generate_mocked_user_data
 
 
 def test_when_sigout_return_200_status_code_and_add_on_blacklist(client):
-    random_id = uuid1()
-    mocked_user = {
-        "username": f"user_{random_id}",
-        "email": f"user{random_id}@mail.com",
-        "password": "123456",
-    }
+    mocked_user = generate_mocked_user_data()
     user = Users.create(**mocked_user)
     access_token, _ = user.generate_tokens()
 
