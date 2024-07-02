@@ -16,14 +16,8 @@ def test_when_sigout_return_200_status_code_and_add_on_blacklist(client):
         "password": "123456",
     }
     user = Users.create(**mocked_user)
+    access_token, _ = user.generate_tokens()
 
-    access_token = jwt.encode(
-        {
-            "id": user.id,
-            "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=10),
-        },
-        envs_config.SECRET_KEY,
-    )
     response = client.post(
         "api/auth/sign-out",
         headers={"authentication": f"Bearer {access_token}"},

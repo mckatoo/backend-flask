@@ -20,20 +20,7 @@ def sign_in():
         user = Users.get_or_none(email=email)
         if not user or not user.verify_password(password):
             raise
-        access_token = jwt.encode(
-            {
-                "id": user.id,
-                "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=10),
-            },
-            envs_config.SECRET_KEY,
-        )
-        refresh_token = jwt.encode(
-            {
-                "id": user.id,
-                "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=60),
-            },
-            envs_config.SECRET_KEY,
-        )
+        access_token, refresh_token = user.generate_tokens()
 
         return jsonify(
             {"accessToken": access_token, "refreshToken": refresh_token}
