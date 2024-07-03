@@ -64,7 +64,8 @@ def delete_user(id):
 @verify_token_middleware
 def update_user(id):
     try:
-        Users.update(**request.json).where(Users.id == id).execute()
+        data = request.json
+        Users.update(**data).where(Users.id == id).execute()
         return jsonify({}), 204
     except Exception as e:
         contain = str(e).lower().__contains__

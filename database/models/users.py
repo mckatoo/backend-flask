@@ -18,11 +18,12 @@ class Users(Model):
     password = CharField(max_length=300, null=False)
 
     def save(self, *args, **kwargs):
-        self.password = generate_password_hash(str(self.password))
+        password = str(self.password) + envs_config.SECRET_KEY
+        self.password = generate_password_hash(password)
         super(Users, self).save(*args, **kwargs)
 
     def verify_password(self, password):
-        return check_password_hash(str(self.password), password)
+        return check_password_hash(str(self.password), password + envs_config.SECRET_KEY)
 
     def generate_tokens(self):
         if not self.id:
