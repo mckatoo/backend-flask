@@ -58,3 +58,18 @@ def delete_user(id):
         if contains("not") and contains("exist"):
             return jsonify({"error": "Bad Request"}), 400
         return jsonify({"error": "Unknown Error"}), 500
+
+
+@user_routes.route("/<id>", methods=["PATCH"])
+@verify_token_middleware
+def update_user(id):
+    try:
+        Users.update(**request.json).where(Users.id == id).execute()
+        return jsonify({}), 204
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain("400"):
+            return jsonify({"error": "Bad Request"}), 400
+        if contain("not") and contain("found"):
+            return jsonify({"error": "Not Found"}), 404
+        return jsonify({"error": "Unkown Error"}), 500
