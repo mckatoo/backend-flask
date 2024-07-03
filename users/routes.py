@@ -39,7 +39,17 @@ def get_user_by_id(id):
             return jsonify({"error": "Not Found"}), 404
         return jsonify({"error": "Unknown Error"}), 500
 
+
 @users_routes.route("", methods=["GET"])
 def list_users():
     users = list(Users.select().dicts())
     return jsonify(users), 200
+
+
+@user_routes.route("/<id>", methods=["DELETE"])
+def delete_user(id):
+    try:
+        Users.delete_by_id(id)
+        return jsonify({}), 204
+    except Exception as e:
+        return jsonify({"error": "Unknown Error"}), 500
