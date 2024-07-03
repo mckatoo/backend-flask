@@ -47,9 +47,14 @@ def list_users():
 
 
 @user_routes.route("/<id>", methods=["DELETE"])
+@verify_token_middleware
 def delete_user(id):
     try:
-        Users.delete_by_id(id)
+        user = Users.get_by_id(id)
+        user.delete_instance()
         return jsonify({}), 204
     except Exception as e:
+        contains = str(e).lower().__contains__
+        if contains("not") and contains("exist"):
+            return jsonify({"error": "Bad Request"}), 400
         return jsonify({"error": "Unknown Error"}), 500
