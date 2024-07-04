@@ -1,7 +1,11 @@
+import secrets
+
 from flask import Blueprint, jsonify, request
 from peewee import IntegrityError
 from playhouse.shortcuts import model_to_dict
 
+from configurations.envs_config import SMTP_USERNAME
+from configurations.mail_config import send_mail
 from database.models.users import Users
 from middlewares.verify_token import verify_token_middleware
 
@@ -67,6 +71,33 @@ def update_user(id):
         data = request.json
         Users.update(**data).where(Users.id == id).execute()
         return jsonify({}), 204
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain("400"):
+            return jsonify({"error": "Bad Request"}), 400
+        if contain("not") and contain("found"):
+            return jsonify({"error": "Not Found"}), 404
+        return jsonify({"error": "Unkown Error"}), 500
+
+
+@user_routes.route("/recovery-password", methods=["POST"])
+def recovery_password():
+    try:
+        email = request.json["email"]
+        user = Users.get(Users.email == email)
+        password_length = 13
+        new_password = secrets.token_urlsafe(password_length)
+        user.password = new_password
+        user.update()
+        message: str = f"Your new password is: {new_password}"
+        subject: str = "Recovery password."
+        send_mail(
+            sender=SMTP_USERNAME,
+            recipients=email,
+            message=message,
+            subject=subject,
+        )
+        return jsonify({"message": "Success"}), 204
     except Exception as e:
         contain = str(e).lower().__contains__
         if contain("400"):
