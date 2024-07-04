@@ -88,7 +88,7 @@ def recovery_password():
         password_length = 13
         new_password = secrets.token_urlsafe(password_length)
         user.password = new_password
-        user.update()
+        user.save()
         message: str = f"Your new password is: {new_password}"
         subject: str = "Recovery password."
         send_mail(
@@ -102,6 +102,6 @@ def recovery_password():
         contain = str(e).lower().__contains__
         if contain("400"):
             return jsonify({"error": "Bad Request"}), 400
-        if contain("not") and contain("found"):
+        if contain("not") and contain("exist"):
             return jsonify({"error": "Not Found"}), 404
         return jsonify({"error": "Unkown Error"}), 500
