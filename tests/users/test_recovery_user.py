@@ -5,7 +5,7 @@ from database.models.users import Users
 from tests.utils import generate_mocked_user_data
 
 
-@patch("configurations.mail_config.send_mail")
+@patch("smtplib.SMTP")
 def test_recovery_password_with_status_200(mock, client):
     mocked_user = generate_mocked_user_data()
     Users.create(**mocked_user)
@@ -20,8 +20,7 @@ def test_recovery_password_with_status_200(mock, client):
     assert not user.verify_password(mocked_user["password"])
 
 
-@patch("configurations.mail_config.send_mail")
-def test_fail_with_status_404_on_use_invalid_email(mock, client):
+def test_fail_with_status_404_on_use_invalid_email(client):
     response = client.post(
         "api/user/recovery-password",
         data=json.dumps({"email": "invalid@email.com"}),
