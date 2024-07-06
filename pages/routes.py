@@ -41,13 +41,31 @@ def get_page(slug: str):
         return {"error": "Unknown Error"}, 500
 
 
-@page_routes.route("/<string:page>", methods=["PATCH"])
+@page_routes.route("/<string:slug>", methods=["PATCH"])
 @verify_token_middleware
-def update_page(page: str):
-    return {"error": "Unknown Error"}, 500
+def update_page(slug: str):
+    try:
+        Pages.update(**request.json).where(Pages.slug == slug).execute()
+        return jsonify({}), 204
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain("400") or contain("415"):
+            return jsonify({"error": "Bad Request"}), 400
+        if contain("not") and contain("found"):
+            return jsonify({"error": "Not Found"}), 404
+        return jsonify({"error": "Unkown Error"}), 500
 
 
-@page_routes.route("/<string:page>", methods=["DELETE"])
+@page_routes.route("/<string:slug>", methods=["DELETE"])
 @verify_token_middleware
-def delete_page(page: str):
-    return {"error": "Unknown Error"}, 500
+def delete_page(slug: str):
+    try:
+        Pages.delete().where(Pages.slug == slug).execute()
+        return jsonify({}), 204
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain("400") or contain("415"):
+            return jsonify({"error": "Bad Request"}), 400
+        if contain("not") and contain("found"):
+            return jsonify({"error": "Not Found"}), 404
+        return jsonify({"error": "Unkown Error"}), 500
