@@ -18,7 +18,7 @@ class Pages(Model):
         unique=True,
         default=""
     )
-    image_id = ForeignKeyField(Images, backref="image")
+    image_id = ForeignKeyField(Images, backref="image", null=True)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
