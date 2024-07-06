@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from configurations.mail_config import send_mail
+from middlewares.verify_token import verify_token_middleware
 
 mailer_routes = Blueprint("mailer", __name__)
 
@@ -10,6 +11,7 @@ def valid_email_error(error: str):
 
 
 @mailer_routes.route("", methods=["POST"])
+@verify_token_middleware
 def send_email():
     try:
         sender: str = request.json["from"]

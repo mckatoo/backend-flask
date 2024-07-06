@@ -2,10 +2,11 @@ from flask import Blueprint, jsonify, request
 
 from configurations.cloudinary_config import (
     destroy,
-    image_uploader,
     get_resource,
+    image_uploader,
 )
 from configurations.envs_config import IMAGE_ALLOWED_EXTENSIONS
+from middlewares.verify_token import verify_token_middleware
 
 image_routes = Blueprint("image_routes", __name__)
 
@@ -32,6 +33,7 @@ def get_image():
 
 
 @image_routes.route("", methods=["POST"])
+@verify_token_middleware
 def send_image():
     if "file" not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -56,6 +58,7 @@ def send_image():
 
 
 @image_routes.route("", methods=["DELETE"])
+@verify_token_middleware
 def delete_image():
     try:
         if not request.json or "id" not in request.json:

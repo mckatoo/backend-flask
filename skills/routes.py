@@ -5,12 +5,14 @@ from playhouse.shortcuts import model_to_dict
 from database.models.projects import Projects
 from database.models.skills import Skills
 from database.models.skills_projects import SkillsProjects
+from middlewares.verify_token import verify_token_middleware
 
 skills_routes = Blueprint("skills_routes", __name__)
 skill_routes = Blueprint("skill_routes", __name__)
 
 
 @skill_routes.route("", methods=["POST"])
+@verify_token_middleware
 def create_skill():
     try:
         id = Skills.create(**request.json).get_id()
@@ -59,6 +61,7 @@ def list_all_skill():
 
 
 @skill_routes.route("/<id>", methods=["PATCH"])
+@verify_token_middleware
 def update_skill(id):
     try:
         Skills.update(**request.json).where(Skills.id == id).execute()
@@ -73,6 +76,7 @@ def update_skill(id):
 
 
 @skill_routes.route("/<id>", methods=["DELETE"])
+@verify_token_middleware
 def delete_skill(id):
     try:
         Skills.delete_by_id(id)

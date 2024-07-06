@@ -2,6 +2,24 @@ import json
 from uuid import uuid1
 
 from database.models.skills import Skills
+from database.models.users import Users
+from tests.utils import generate_mocked_user_data
+
+access_token, _ = Users.create(**generate_mocked_user_data()).generate_tokens()
+
+
+def test_unauthorized_error_on_request_without_valid_token(client):
+    random_id = uuid1()
+    mocked_data = {"title": f"Title test {random_id}"}
+    response = client.post(
+        "api/skill",
+        headers={"authentication": "Bearer invalid-token"},
+        data=json.dumps(mocked_data),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 401
+    assert response.json == {"error": "Unauthorized"}
 
 
 def test_create_skill(client):
@@ -11,6 +29,7 @@ def test_create_skill(client):
         "api/skill",
         data=json.dumps(mocked_data),
         content_type="application/json",
+        headers={"authentication": f"Bearer {access_token}"},
     )
     created_skill = Skills.get_or_none(Skills.title == mocked_data["title"])
 
@@ -22,6 +41,7 @@ def test_error_on_request_without_data(client):
     response = client.post(
         "api/skill",
         content_type="application/json",
+        headers={"authentication": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400
@@ -34,6 +54,7 @@ def test_error_on_request_with_invalid_data(client):
         "api/skill",
         data=json.dumps(mocked_data),
         content_type="application/json",
+        headers={"authentication": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400

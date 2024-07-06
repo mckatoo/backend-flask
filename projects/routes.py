@@ -3,12 +3,14 @@ from flask import Blueprint, jsonify, request
 from playhouse.shortcuts import model_to_dict
 
 from database.models.projects import Projects
+from middlewares.verify_token import verify_token_middleware
 
 projects_routes = Blueprint("projects_routes", __name__)
 project_routes = Blueprint("project_routes", __name__)
 
 
 @project_routes.route("", methods=["POST"])
+@verify_token_middleware
 def create_project():
     try:
         if not request.json:
@@ -53,6 +55,7 @@ def list_projects():
 
 
 @project_routes.route("/<id>", methods=["PATCH"])
+@verify_token_middleware
 def update_project(id):
     try:
         Projects.update(**request.json).where(Projects.id == id).execute()
@@ -67,6 +70,7 @@ def update_project(id):
 
 
 @project_routes.route("/<id>", methods=["DELETE"])
+@verify_token_middleware
 def delete_project(id):
     try:
         Projects.delete_by_id(id)
