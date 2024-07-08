@@ -1,9 +1,10 @@
 from flask import Flask
+from flask_cors import CORS
 
 from app.routes import app_routes
 from authentication.routes import auth_routes
 from configurations.db_config import load_db_config
-from configurations.envs_config import DEV_ENV
+from configurations.envs_config import CORS_ALLOWED_ORIGINS, DEV_ENV
 from images.routes import image_routes
 from mailer.routes import mailer_routes
 from pages.routes import page_routes
@@ -12,6 +13,10 @@ from skills.routes import skill_routes, skills_routes
 from users.routes import user_routes, users_routes
 
 app = Flask("web_app")
+if DEV_ENV:
+    cors = CORS(app)
+else:
+    cors = CORS(app, origins=str(CORS_ALLOWED_ORIGINS))
 
 load_db_config()
 

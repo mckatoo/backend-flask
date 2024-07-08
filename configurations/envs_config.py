@@ -1,7 +1,10 @@
-from decouple import config
+from typing import cast
+from decouple import Csv, config
 
 DEV_ENV = config("DEV_ENV", cast=bool, default=False)
 SECRET_KEY = config("PRIVATE_KEY")
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", cast=Csv())
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
 IMAGE_ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 CLOUDINARY_FOLDER = config("CLOUDINARY_FOLDER", cast=str, default="")
