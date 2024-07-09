@@ -31,7 +31,7 @@ def test_error_400_when_request_creation_without_data(client):
         headers={"authentication": f"Bearer {access_token}"},
         content_type="application/json",
     )
-    
+
     assert response.status_code == 400
     assert response.json == {"error": "Bad Request"}
 

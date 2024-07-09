@@ -33,6 +33,6 @@ def test_get_status_204_on_update(client):
         headers={"authentication": f"Bearer {access_token}"},
     )
     updated_page = Pages.get_by_id(created_page.id)
-    
+
     assert response.status_code == 204
     assert updated_page.description == new_data["description"]

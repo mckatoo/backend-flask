@@ -1,4 +1,3 @@
-from typing import cast
 from decouple import Csv, config
 
 DEV_ENV = config("DEV_ENV", cast=bool, default=False)

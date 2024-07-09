@@ -40,6 +40,7 @@ def test_success_on_signin(client):
         (datetime.now(tz=timezone.utc) + timedelta(minutes=60)).timestamp()
     )
 
+
 def test_fail_on_request_signin_with_invalid_credentials(client):
     mocked_user = {
         "email": "invalid@user.com",
@@ -54,6 +55,7 @@ def test_fail_on_request_signin_with_invalid_credentials(client):
 
     assert response.status_code == 401
     assert response.json == {"error": "Unauthorized"}
+
 
 def test_bad_request_error_when_request_without_credentials(client):
     response = client.post(

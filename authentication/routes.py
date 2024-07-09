@@ -1,9 +1,5 @@
-from datetime import datetime, timedelta, timezone
-
-import jwt
 from flask import Blueprint, jsonify, request
 
-from configurations import envs_config
 from database.models.users import Users
 from database.models.blacklist import Blacklist
 

@@ -8,9 +8,10 @@ def test_unauthorized_error_on_request_without_valid_token(client):
         headers={"authentication": "Bearer invalid-token"},
         content_type="application/json",
     )
-    
+
     assert response.status_code == 401
     assert response.json == {"error": "Unauthorized"}
+
 
 def test_delete_user_and_return_204_status_code(client):
     existent_user_data = generate_mocked_user_data()
@@ -37,7 +38,7 @@ def test_error_400_when_request_delete_without_id(client):
         headers={"authentication": f"Bearer {access_token}"},
         content_type="application/json",
     )
-    
+
     assert response.status_code == 400
     assert response.json == {"error": "Bad Request"}
 
@@ -51,6 +52,6 @@ def test_error_400_when_request_delete_with_invalid_id(client):
         headers={"authentication": f"Bearer {access_token}"},
         content_type="application/json",
     )
-    
+
     assert response.status_code == 400
     assert response.json == {"error": "Bad Request"}

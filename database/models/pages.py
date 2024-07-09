@@ -12,12 +12,7 @@ class Pages(Model):
 
     title = CharField(null=False, max_length=200)
     description = TextField(null=False)
-    slug = CharField(
-        max_length=250,
-        null=True,
-        unique=True,
-        default=""
-    )
+    slug = CharField(max_length=250, null=True, unique=True, default="")
     image_id = ForeignKeyField(Images, backref="image", null=True)
 
     def save(self, *args, **kwargs):

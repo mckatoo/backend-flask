@@ -23,7 +23,9 @@ class Users(Model):
         super(Users, self).save(*args, **kwargs)
 
     def verify_password(self, password):
-        return check_password_hash(str(self.password), password + envs_config.SECRET_KEY)
+        return check_password_hash(
+            str(self.password), password + envs_config.SECRET_KEY
+        )
 
     def generate_tokens(self):
         if not self.id:

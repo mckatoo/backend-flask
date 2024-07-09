@@ -26,6 +26,6 @@ def test_get_status_204_on_delete(client):
         headers={"authentication": f"Bearer {access_token}"},
     )
     deleted_page = Pages.get_or_none(Pages.id == created_page.id)
-    
+
     assert response.status_code == 204
     assert deleted_page is None
