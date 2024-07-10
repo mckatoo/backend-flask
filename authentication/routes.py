@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
-from database.models.users import Users
 from database.models.blacklist import Blacklist
+from database.models.users import Users
 
 auth_routes = Blueprint("auth_routes", __name__)
 
@@ -11,9 +11,14 @@ def sign_in():
     try:
         if not request.json:
             raise Exception("400")
-        email = request.json["email"]
+
         password = request.json["password"]
-        user = Users.get_or_none(email=email)
+
+        if "username" in request.json:
+            user = Users.get_or_none(Users.username == request.json["username"])
+        else:
+            user = Users.get_or_none(Users.email == request.json["email"])
+
         if not user or not user.verify_password(password):
             raise
         access_token, refresh_token = user.generate_tokens()
