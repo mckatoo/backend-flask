@@ -19,24 +19,26 @@ def test_success_on_signin_using_email(client):
             "password": mocked_user["password"],
         },
     )
-    access_token = response.json["accessToken"]
-    refresh_token = response.json["refreshToken"]
-    access_token_payload = jwt.decode(
-        access_token, envs_config.SECRET_KEY, algorithms="HS256"
+    access_token = jwt.decode(
+        response.json["accessToken"], envs_config.SECRET_KEY, algorithms="HS256"
     )
-    refresh_token_payload = jwt.decode(
-        refresh_token, envs_config.SECRET_KEY, algorithms="HS256"
+    refresh_token = jwt.decode(
+        response.json["refreshToken"],
+        envs_config.SECRET_KEY,
+        algorithms="HS256",
     )
+    user = {"username": mocked_user["username"], "email": mocked_user["email"]}
 
     assert response.status_code == 200
-    assert access_token_payload["id"] == created_user.id
-    assert refresh_token_payload["id"] == created_user.id
-    assert access_token_payload["exp"] == int(
+    assert access_token["id"] == created_user.id
+    assert refresh_token["id"] == created_user.id
+    assert access_token["exp"] == int(
         (datetime.now(tz=timezone.utc) + timedelta(minutes=10)).timestamp()
     )
-    assert refresh_token_payload["exp"] == int(
+    assert refresh_token["exp"] == int(
         (datetime.now(tz=timezone.utc) + timedelta(minutes=60)).timestamp()
     )
+    assert response.json["user"] == user
 
 
 def test_success_on_signin_using_username(client):
@@ -58,6 +60,7 @@ def test_success_on_signin_using_username(client):
     refresh_token_payload = jwt.decode(
         refresh_token, envs_config.SECRET_KEY, algorithms="HS256"
     )
+    user = {"username": mocked_user["username"], "email": mocked_user["email"]}
 
     assert response.status_code == 200
     assert access_token_payload["id"] == created_user.id
@@ -68,6 +71,7 @@ def test_success_on_signin_using_username(client):
     assert refresh_token_payload["exp"] == int(
         (datetime.now(tz=timezone.utc) + timedelta(minutes=60)).timestamp()
     )
+    assert response.json["user"] == user
 
 
 def test_fail_on_request_signin_with_invalid_credentials(client):

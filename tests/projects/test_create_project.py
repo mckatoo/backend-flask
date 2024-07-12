@@ -8,7 +8,7 @@ from database.models.projects import Projects
 from database.models.users import Users
 from tests.utils import generate_mocked_user_data
 
-access_token, _ = Users.create(**generate_mocked_user_data()).generate_tokens()
+access_token = Users.create(**generate_mocked_user_data()).generate_tokens()[0]
 
 
 def test_unauthorized_error_on_request_without_valid_token(client):

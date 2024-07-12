@@ -6,7 +6,7 @@ from tests.utils import generate_mocked_user_data
 def test_when_sigout_return_200_status_code_and_add_on_blacklist(client):
     mocked_user = generate_mocked_user_data()
     user = Users.create(**mocked_user)
-    access_token, _ = user.generate_tokens()
+    access_token = user.generate_tokens()[0]
 
     response = client.post(
         "api/auth/sign-out",

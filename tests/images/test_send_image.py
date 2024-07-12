@@ -6,7 +6,7 @@ from database.models.users import Users
 
 
 mocked_user = Users.create(**generate_mocked_user_data())
-access_token, _ = mocked_user.generate_tokens()
+access_token = mocked_user.generate_tokens()[0]
 
 
 def test_unauthorized_error_on_request_without_valid_token(client):

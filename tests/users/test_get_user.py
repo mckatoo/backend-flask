@@ -6,7 +6,6 @@ from playhouse.shortcuts import model_to_dict
 def test_get_user_by_id(client):
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token, _ = existent_user.generate_tokens()
 
     response = client.get(f"api/user/{existent_user.id}")
 

@@ -6,7 +6,7 @@ from tests.utils import generate_mocked_user_data
 
 
 mocked_user = Users.create(**generate_mocked_user_data())
-access_token, _ = mocked_user.generate_tokens()
+access_token = mocked_user.generate_tokens()[0]
 
 
 @patch("cloudinary.uploader")

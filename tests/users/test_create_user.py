@@ -8,7 +8,7 @@ def test_create_user_returning_user_id_and_201_status_code(client):
     mocked_user_data = generate_mocked_user_data()
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token, _ = existent_user.generate_tokens()
+    access_token = existent_user.generate_tokens()[0]
 
     response = client.post(
         "api/user",
@@ -25,7 +25,7 @@ def test_create_user_returning_user_id_and_201_status_code(client):
 def test_error_400_when_request_creation_without_data(client):
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token, _ = existent_user.generate_tokens()
+    access_token = existent_user.generate_tokens()[0]
     response = client.post(
         "api/user",
         headers={"authentication": f"Bearer {access_token}"},
@@ -42,7 +42,7 @@ def test_error_400_when_request_creation_with_invalid_data(client):
     mocked_user_data["invalid"] = "data"
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token, _ = existent_user.generate_tokens()
+    access_token = existent_user.generate_tokens()[0]
 
     response = client.post(
         "api/user",

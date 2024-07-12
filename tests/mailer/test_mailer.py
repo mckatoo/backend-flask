@@ -5,7 +5,7 @@ from database.models.users import Users
 
 
 mocked_user = generate_mocked_user_data()
-access_token, _ = Users.create(**mocked_user).generate_tokens()
+access_token = Users.create(**mocked_user).generate_tokens()[0]
 
 
 @patch("smtplib.SMTP")

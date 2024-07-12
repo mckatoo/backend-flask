@@ -21,10 +21,10 @@ def sign_in():
 
         if not user or not user.verify_password(password):
             raise
-        access_token, refresh_token = user.generate_tokens()
+        access_token, refresh_token, user = user.generate_tokens()
 
         return jsonify(
-            {"accessToken": access_token, "refreshToken": refresh_token}
+            {"accessToken": access_token, "refreshToken": refresh_token, "user": user}
         )
     except Exception as e:
         if str(e).__contains__("400"):

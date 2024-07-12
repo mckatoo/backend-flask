@@ -44,5 +44,6 @@ class Users(Model):
             },
             envs_config.SECRET_KEY,
         )
+        user = {"username": self.username, "email": self.email}
 
-        return access_token, refresh_token
+        return access_token, refresh_token, user
