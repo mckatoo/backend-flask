@@ -6,6 +6,10 @@ from datetime import datetime, timezone
 from configurations import envs_config
 
 
+def decode_token(token: str) -> dict:
+    return jwt.decode(token, envs_config.SECRET_KEY, algorithms="HS256")
+
+
 def verify_token_middleware(func):
     @wraps(func)
     def decorated_func(*args, **kargs):
@@ -13,9 +17,7 @@ def verify_token_middleware(func):
             token = str(request.headers["authentication"]).removeprefix(
                 "Bearer "
             )
-            decoded_token = jwt.decode(
-                token, envs_config.SECRET_KEY, algorithms="HS256"
-            )
+            decoded_token = decode_token(token)
             in_blacklist = bool(Blacklist.get_or_none(token=token))
             is_expired = (
                 decoded_token["exp"] < datetime.now(tz=timezone.utc).timestamp()

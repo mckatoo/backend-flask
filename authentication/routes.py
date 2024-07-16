@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 
 from database.models.blacklist import Blacklist
 from database.models.users import Users
+from middlewares.verify_token import decode_token
 
 auth_routes = Blueprint("auth_routes", __name__)
 
@@ -24,7 +25,11 @@ def sign_in():
         access_token, refresh_token, user = user.generate_tokens()
 
         return jsonify(
-            {"accessToken": access_token, "refreshToken": refresh_token, "user": user}
+            {
+                "accessToken": access_token,
+                "refreshToken": refresh_token,
+                "user": user,
+            }
         )
     except Exception as e:
         if str(e).__contains__("400"):
@@ -42,19 +47,21 @@ def sign_out():
     return jsonify({}), 200
 
 
-# re_path("^verify-token/?$", verify), GET
+@auth_routes.route("/verify-token", methods=["POST"])
+def verify_token():
+    try:
+        access_token = str(request.headers["authentication"]).removeprefix(
+            "Bearer "
+        )
+        decoded_token = decode_token(access_token)
+        user = Users.get_by_id(decoded_token["id"])
+        
+        return jsonify({"username": user.username, "email": user.email})
+    except Exception as e:
+        return jsonify({"error": e})
+
+
 # re_path("^refresh/?$", verify),
-
-
-# @api_view(["POST"])
-# def sign_out(_):
-#     return Response()
-
-
-# @api_view(["GET"])
-# def verify(_):
-#     return Response()
-
 
 # @api_view(["POST"])
 # def refresh(_):
