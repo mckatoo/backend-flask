@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from flask import json
 
 from configurations import envs_config
 from database.models.users import Users
@@ -17,86 +16,27 @@ def test_success_on_verify_token(client):
         "api/auth/verify-token",
         headers={"authentication": f"Bearer {access_token}"},
     )
-    # access_token = jwt.decode(
-    #     response.json["accessToken"], envs_config.SECRET_KEY, algorithms="HS256"
-    # )
-    # refresh_token = jwt.decode(
-    #     response.json["refreshToken"],
-    #     envs_config.SECRET_KEY,
-    #     algorithms="HS256",
-    # )
-    # user = {"username": mocked_user["username"], "email": mocked_user["email"]}
 
     assert response.status_code == 200
     assert response.json == {
         "username": created_user.username,
         "email": created_user.email,
     }
-    # assert access_token["id"] == cre`ated_user.id
-    # assert refresh_token["id"] == created_user.id
-    # assert access_token["exp"] == int(
-    #     (datetime.now(tz=timezone.utc) + timedelta(minutes=10)).timestamp()
-    # )
-    # assert refresh_token["exp"] == int(
-    #     (datetime.now(tz=timezone.utc) + timedelta(minutes=60)).timestamp()
-    # )
-    # assert response.json["user"] == user
 
 
-# def test_success_on_signin_using_username(client):
-#     mocked_user = generate_mocked_user_data()
-#     created_user = Users.create(**mocked_user)
+def test_fail_on_verify_fake_token(client):
+    access_token = jwt.encode(
+        {
+            "id": "fake_id",
+            "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=10),
+        },
+        envs_config.SECRET_KEY,
+    )
 
-#     response = client.post(
-#         "api/auth/sign-in",
-#         json={
-#             "username": mocked_user["username"],
-#             "password": mocked_user["password"],
-#         },
-#     )
-#     access_token = response.json["accessToken"]
-#     refresh_token = response.json["refreshToken"]
-#     access_token_payload = jwt.decode(
-#         access_token, envs_config.SECRET_KEY, algorithms="HS256"
-#     )
-#     refresh_token_payload = jwt.decode(
-#         refresh_token, envs_config.SECRET_KEY, algorithms="HS256"
-#     )
-#     user = {"username": mocked_user["username"], "email": mocked_user["email"]}
+    response = client.post(
+        "api/auth/verify-token",
+        headers={"authentication": f"Bearer {access_token}"},
+    )
 
-#     assert response.status_code == 200
-#     assert access_token_payload["id"] == created_user.id
-#     assert refresh_token_payload["id"] == created_user.id
-#     assert access_token_payload["exp"] == int(
-#         (datetime.now(tz=timezone.utc) + timedelta(minutes=10)).timestamp()
-#     )
-#     assert refresh_token_payload["exp"] == int(
-#         (datetime.now(tz=timezone.utc) + timedelta(minutes=60)).timestamp()
-#     )
-#     assert response.json["user"] == user
-
-
-# def test_fail_on_request_signin_with_invalid_credentials(client):
-#     mocked_user = {
-#         "email": "invalid@user.com",
-#         "password": "123456",
-#     }
-
-#     response = client.post(
-#         "api/auth/sign-in",
-#         data=json.dumps(mocked_user),
-#         content_type="application/json",
-#     )
-
-#     assert response.status_code == 401
-#     assert response.json == {"error": "Unauthorized"}
-
-
-# def test_bad_request_error_when_request_without_credentials(client):
-#     response = client.post(
-#         "api/auth/sign-in",
-#         content_type="application/json",
-#     )
-
-#     assert response.status_code == 400
-#     assert response.json == {"error": "Bad Request"}
+    assert response.status_code == 401
+    assert response.json == {"error": "Unauthorized"}
