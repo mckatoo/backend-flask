@@ -66,8 +66,17 @@ def verify_token():
         return jsonify({"error": e}), 500
 
 
-# re_path("^refresh/?$", verify),
-
-# @api_view(["POST"])
-# def refresh(_):
-#     return Response()
+@auth_routes.route("/refresh-token", methods=["POST"])
+@verify_token_middleware
+def refresh():
+    return jsonify(
+        {
+            "user": {
+                "id": "number;",
+                "name": "string;",
+                "email": "string;",
+            },
+            "accessToken": "string;",
+            "refreshToken": "string;",
+        }
+    ), 200
