@@ -20,12 +20,14 @@ def test_success_on_signin_using_email(client):
         },
     )
     access_token = jwt.decode(
-        response.json["accessToken"], envs_config.SECRET_KEY, algorithms="HS256"
+        response.json["accessToken"],
+        envs_config.SECRET_KEY,
+        algorithms=["HS256"],
     )
     refresh_token = jwt.decode(
         response.json["refreshToken"],
         envs_config.SECRET_KEY,
-        algorithms="HS256",
+        algorithms=["HS256"],
     )
     user = {"username": mocked_user["username"], "email": mocked_user["email"]}
 
@@ -55,10 +57,10 @@ def test_success_on_signin_using_username(client):
     access_token = response.json["accessToken"]
     refresh_token = response.json["refreshToken"]
     access_token_payload = jwt.decode(
-        access_token, envs_config.SECRET_KEY, algorithms="HS256"
+        access_token, envs_config.SECRET_KEY, algorithms=["HS256"]
     )
     refresh_token_payload = jwt.decode(
-        refresh_token, envs_config.SECRET_KEY, algorithms="HS256"
+        refresh_token, envs_config.SECRET_KEY, algorithms=["HS256"]
     )
     user = {"username": mocked_user["username"], "email": mocked_user["email"]}
 

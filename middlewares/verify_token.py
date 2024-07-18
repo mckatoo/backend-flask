@@ -7,7 +7,7 @@ from configurations import envs_config
 
 
 def decode_token(token: str) -> dict:
-    return jwt.decode(token, envs_config.SECRET_KEY, algorithms="HS256")
+    return jwt.decode(token, envs_config.SECRET_KEY, algorithms=["HS256"])
 
 
 def verify_token_middleware(func):

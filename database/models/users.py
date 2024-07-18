@@ -18,7 +18,7 @@ class Users(Model):
     password = CharField(max_length=300, null=False)
 
     def save(self, *args, **kwargs):
-        password = str(self.password) + envs_config.SECRET_KEY
+        password = str(self.password) + str(envs_config.SECRET_KEY)
         self.password = generate_password_hash(password)
         super(Users, self).save(*args, **kwargs)
 
@@ -28,18 +28,19 @@ class Users(Model):
         )
 
     def generate_tokens(self):
-        if not self.id:
+        id = self.get_id()
+        if not id:
             raise Exception("Create user first.")
         access_token = jwt.encode(
             {
-                "id": self.id,
+                "id": id,
                 "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=10),
             },
             envs_config.SECRET_KEY,
         )
         refresh_token = jwt.encode(
             {
-                "id": self.id,
+                "id": id,
                 "exp": datetime.now(tz=timezone.utc) + timedelta(minutes=60),
             },
             envs_config.SECRET_KEY,
