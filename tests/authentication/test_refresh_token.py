@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 
 from configurations import envs_config
-from database.models.users import Users, TokenType
+from database.models.users import Users
 from middlewares.verify_token import decode_token
 from tests.utils import generate_mocked_user_data
 
