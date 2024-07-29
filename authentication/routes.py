@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from database.models.blacklist import Blacklist
-from database.models.users import Users
+from database.models.users import Users, TokenType
 from middlewares.verify_token import decode_token, verify_token_middleware
 
 auth_routes = Blueprint("auth_routes", __name__)
@@ -22,13 +22,13 @@ def sign_in():
 
         if not user or not user.verify_password(password):
             raise
-        access_token, refresh_token, user = user.generate_tokens()
+        tokens = user.generate_tokens()
 
         return jsonify(
             {
-                "accessToken": access_token,
-                "refreshToken": refresh_token,
-                "user": user,
+                "accessToken": tokens["access_token"],
+                "refreshToken": tokens["refresh_token"],
+                "user": tokens["user"],
             }
         )
     except Exception as e:
@@ -56,6 +56,10 @@ def verify_token():
             "Bearer "
         )
         decoded_token = decode_token(access_token)
+        token_type = decoded_token["type"]
+        if token_type != TokenType.ACCESS_TOKEN.value:
+            return jsonify({"error": "Unauthorized"}), 401
+
         user = Users.get_by_id(decoded_token["id"])
 
         return jsonify({"username": user.username, "email": user.email}), 200
@@ -69,14 +73,32 @@ def verify_token():
 @auth_routes.route("/refresh-token", methods=["POST"])
 @verify_token_middleware
 def refresh():
-    return jsonify(
-        {
-            "user": {
-                "id": "number;",
-                "name": "string;",
-                "email": "string;",
-            },
-            "accessToken": "string;",
-            "refreshToken": "string;",
-        }
-    ), 200
+    try:
+        if not request.json:
+            raise Exception("400")
+
+        refresh_token = str(request.json["refreshToken"])
+        decoded_token = decode_token(refresh_token)
+        token_type = decoded_token["type"]
+
+        if token_type != TokenType.REFRESH_TOKEN.value:
+            return jsonify({"error": "Unauthorized"}), 401
+
+        user = Users.get_by_id(decoded_token["id"])
+        tokens = user.generate_tokens()
+        return jsonify(
+            {
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                },
+                "accessToken": tokens["access_token"],
+                "refreshToken": tokens["refresh_token"],
+            }
+        ), 200
+    except Exception as e:
+        contain = str(e).lower().__contains__
+        if contain("not") and contain("exist"):
+            return jsonify({"error": "Unauthorized"}), 401
+        return jsonify({"error": e}), 500

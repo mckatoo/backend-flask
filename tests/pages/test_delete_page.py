@@ -3,7 +3,7 @@ from database.models.pages import Pages
 from tests.utils import generate_mocked_user_data
 from uuid import uuid1
 
-access_token = Users.create(**generate_mocked_user_data()).generate_tokens()[0]
+access_token = Users.create(**generate_mocked_user_data()).generate_tokens()["access_token"]
 
 
 def test_unauthorized_error_on_request_without_valid_token(client, image):

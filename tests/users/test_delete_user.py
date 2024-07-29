@@ -16,7 +16,7 @@ def test_unauthorized_error_on_request_without_valid_token(client):
 def test_delete_user_and_return_204_status_code(client):
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token = existent_user.generate_tokens()[0]
+    access_token = existent_user.generate_tokens()["access_token"]
 
     response = client.delete(
         f"api/user/{existent_user.id}",
@@ -32,7 +32,7 @@ def test_delete_user_and_return_204_status_code(client):
 def test_error_400_when_request_delete_without_id(client):
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token = existent_user.generate_tokens()[0]
+    access_token = existent_user.generate_tokens()["access_token"]
     response = client.delete(
         "api/user",
         headers={"authentication": f"Bearer {access_token}"},
@@ -46,7 +46,7 @@ def test_error_400_when_request_delete_without_id(client):
 def test_error_400_when_request_delete_with_invalid_id(client):
     existent_user_data = generate_mocked_user_data()
     existent_user = Users.create(**existent_user_data)
-    access_token = existent_user.generate_tokens()[0]
+    access_token = existent_user.generate_tokens()["access_token"]
     response = client.delete(
         "api/user/invalid-id",
         headers={"authentication": f"Bearer {access_token}"},

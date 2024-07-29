@@ -17,7 +17,7 @@ def test_unauthorized_error_on_request_without_valid_token(client, image):
 def test_get_status_204_on_update(client):
     access_token = Users.create(
         **generate_mocked_user_data()
-    ).generate_tokens()[0]
+    ).generate_tokens()["access_token"]
 
     random_id = uuid1()
     created_page = Pages.create(

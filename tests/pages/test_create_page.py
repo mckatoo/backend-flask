@@ -43,7 +43,7 @@ def test_unauthorized_error_on_request_without_valid_token(client, image):
 def test_get_id_slug_and_status_201_on_create(client, image):
     access_token = Users.create(
         **generate_mocked_user_data()
-    ).generate_tokens()[0]
+    ).generate_tokens()["access_token"]
     data = RandomPageData(image)
     response = client.post(
         "api/page",
