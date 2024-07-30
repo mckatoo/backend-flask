@@ -267,3 +267,7 @@ pyrightconfig.json
 
 keycloak*/**/*
 keycloak_db*/**/*
+
+# Editors settings
+.vscode*/**/*
+.idea*/**/*
