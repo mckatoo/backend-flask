@@ -9,3 +9,9 @@ run:
 
 run-debug:
 	flask --app main.py --debug run
+
+lint:
+	ruff check
+
+lint-fix:
+	ruff check --fix
