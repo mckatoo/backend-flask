@@ -10,6 +10,7 @@ from mailer.routes import mailer_routes
 from pages.routes import page_routes
 from projects.routes import project_routes, projects_routes
 from skills.routes import skill_routes, skills_routes
+from users import make_init_user
 from users.routes import user_routes, users_routes
 
 app = Flask("web_app")
@@ -33,3 +34,5 @@ app.register_blueprint(user_routes, url_prefix="/api/user")
 app.register_blueprint(auth_routes, url_prefix="/api/auth")
 
 app.config["DEBUG"] = DEV_ENV
+
+make_init_user()
