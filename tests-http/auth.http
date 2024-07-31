@@ -1,4 +1,7 @@
 @baseUrl = {{$dotenv baseUrl}}
+@email = {{$dotenv email}}
+@password = {{$dotenv password}}
+@username = {{$dotenv username}}
 @refreshToken = {{login.response.body.$.refreshToken}}
 @accessToken = {{login.response.body.$.accessToken}}
 {{$shared ACCESS_TOKEN}} = {{accessToken}}
@@ -9,8 +12,8 @@ POST {{baseUrl}}/api/auth/sign-in HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ed6c37c5-4f2c-11ef-ab8d-fc017cff3530@email.com",
-  "password": "pass_ed6c37c5-4f2c-11ef-ab8d-fc017cff3530"
+  "email": "{{email}}",
+  "password": "{{password}}"
 }
 
 ###
