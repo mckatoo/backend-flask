@@ -16,7 +16,7 @@ def test_success_on_refresh_token(client):
     response = client.post(
         "api/auth/refresh-token",
         json={"refreshToken": tokens["refresh_token"]},
-        headers={"authentication": f"Bearer {tokens["access_token"]}"},
+        headers={"authorization": f"Bearer {tokens["access_token"]}"},
     )
     decoded_access_token = decode_token(response.json["accessToken"])
     decoded_refresh_token = decode_token(response.json["refreshToken"])
@@ -51,7 +51,7 @@ def test_fail_on_refresh_with_fake_refresh_token(client):
     response = client.post(
         "api/auth/refresh-token",
         json={"refreshToken": refresh_token},
-        headers={"authentication": f"Bearer {tokens["access_token"]}"},
+        headers={"authorization": f"Bearer {tokens["access_token"]}"},
     )
 
     assert response.status_code == 401
@@ -65,7 +65,7 @@ def test_fail_on_refresh_with_access_token(client):
     response = client.post(
         "api/auth/refresh-token",
         json={"refreshToken": access_token},
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 401

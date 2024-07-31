@@ -14,7 +14,7 @@ def test_success_on_verify_token(client):
 
     response = client.post(
         "api/auth/verify-token",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 200
@@ -36,7 +36,7 @@ def test_fail_on_verify_fake_token(client):
 
     response = client.post(
         "api/auth/verify-token",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 401
@@ -49,7 +49,7 @@ def test_fail_on_verify_refresh_token(client):
 
     response = client.post(
         "api/auth/verify-token",
-        headers={"authentication": f"Bearer {refresh_token}"},
+        headers={"authorization": f"Bearer {refresh_token}"},
     )
 
     assert response.status_code != 200

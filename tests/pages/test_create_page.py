@@ -29,7 +29,7 @@ def test_unauthorized_error_on_request_without_valid_token(client, image):
     data = RandomPageData(image)
     response = client.post(
         "api/page",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         json={
             "title": data.title,
             "description": data.description,
@@ -52,7 +52,7 @@ def test_get_id_slug_and_status_201_on_create(client, image):
             "description": data.description,
             "image": {"url": data.image.url, "alt": data.image.alt},
         },
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
     page = Pages.get(Pages.title == data.title)
     assert response.status_code == 201

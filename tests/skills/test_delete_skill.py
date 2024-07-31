@@ -20,7 +20,7 @@ def test_unauthorized_error_on_request_without_valid_token(client):
     response = client.delete(
         f"api/skill/{id}",
         content_type="application/json",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
     )
 
     assert response.status_code == 401
@@ -38,7 +38,7 @@ def test_delete_skill(client):
     response = client.delete(
         f"api/skill/{id}",
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 204
@@ -49,7 +49,7 @@ def test_error_when_request_without_id(client):
     response = client.delete(
         "api/skill",
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400

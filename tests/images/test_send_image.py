@@ -18,7 +18,7 @@ def test_unauthorized_error_on_request_without_valid_token(client):
     uploader.upload = Mock(return_value=mocked_result)
     response = client.post(
         "api/image",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         data=data,
         content_type="multipart/form-data",
     )
@@ -36,7 +36,7 @@ def test_send_image_returning_status_201_and_json(client):
     uploader.upload = Mock(return_value=mocked_result)
     response = client.post(
         "api/image",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=data,
         content_type="multipart/form-data",
     )
@@ -52,7 +52,7 @@ def test_send_image_returning_status_201_and_json(client):
 def test_send_without_image_returning_status_400_and_json(client):
     response = client.post(
         "api/image",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         content_type="multipart/form-data",
     )
 
@@ -66,7 +66,7 @@ def test_send_invalid_image_returning_status_400_and_json(client):
     }
     response = client.post(
         "api/image",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=mocked_data,
         content_type="multipart/form-data",
     )
@@ -79,7 +79,7 @@ def test_send_empty_image_returning_status_400_and_json(client):
     mocked_data = {"file": (io.BytesIO(b"some initial text data"), "")}
     response = client.post(
         "api/image",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=mocked_data,
         content_type="multipart/form-data",
     )

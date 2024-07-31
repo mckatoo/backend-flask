@@ -23,7 +23,7 @@ def test_unauthorized_error_on_request_without_valid_token(client):
     }
     response = client.post(
         "api/project",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         content_type="application/json",
         data=json.dumps(mocked_data),
     )
@@ -46,7 +46,7 @@ def test_create_project_returning_status_201_and_id(client):
         "api/project",
         content_type="application/json",
         data=json.dumps(mocked_data),
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
     created_project = Projects.get(Projects.title == mocked_data["title"])
 
@@ -62,7 +62,7 @@ def test_error_when_try_create_projects_without_data(client):
     response = client.post(
         "api/project",
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400
@@ -74,7 +74,7 @@ def test_error_when_try_create_projects_wit_invalid_data(client):
         "api/project",
         data={"invalid": "data"},
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400

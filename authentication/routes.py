@@ -40,7 +40,7 @@ def sign_in():
 @auth_routes.route("/sign-out", methods=["POST"])
 @verify_token_middleware
 def sign_out():
-    access_token = str(request.headers["authentication"]).removeprefix(
+    access_token = str(request.headers["authorization"]).removeprefix(
         "Bearer "
     )
     Blacklist.create(token=access_token)
@@ -52,7 +52,7 @@ def sign_out():
 @verify_token_middleware
 def verify_token():
     try:
-        access_token = str(request.headers["authentication"]).removeprefix(
+        access_token = str(request.headers["authorization"]).removeprefix(
             "Bearer "
         )
         decoded_token = decode_token(access_token)

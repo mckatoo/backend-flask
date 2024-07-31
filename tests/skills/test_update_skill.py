@@ -21,7 +21,7 @@ def test_unauthorized_error_on_request_without_valid_token(client):
     id = skill.get_id()
     response = client.patch(
         f"api/skill/{id}",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         data=json.dumps(mocked_new_data),
         content_type="application/json",
     )
@@ -43,7 +43,7 @@ def test_update_skill_returning_status_204(client):
         f"api/skill/{id}",
         data=json.dumps(mocked_new_data),
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
     updated_skill = Skills.get_by_id(id)
     for key in mocked_new_data:
@@ -57,7 +57,7 @@ def test_error_when_request_without_new_data(client):
     random_id = uuid.uuid1()
     response = client.patch(
         f"api/skill/{random_id}",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         content_type="application/json",
     )
 
@@ -74,7 +74,7 @@ def test_error_when_request_without_id(client):
         "api/skill",
         data=json.dumps(mocked_data),
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400
@@ -86,7 +86,7 @@ def test_error_when_request_with_not_founded_id(client):
     response = client.patch(
         f"api/skill/{random_id}",
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400

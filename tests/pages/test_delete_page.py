@@ -9,7 +9,7 @@ access_token = Users.create(**generate_mocked_user_data()).generate_tokens()["ac
 def test_unauthorized_error_on_request_without_valid_token(client, image):
     response = client.patch(
         "api/page/about-page",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
     )
     assert response.status_code == 401
     assert response.json == {"error": "Unauthorized"}
@@ -23,7 +23,7 @@ def test_get_status_204_on_delete(client):
     )
     response = client.delete(
         f"api/page/{created_page.slug}",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
     deleted_page = Pages.get_or_none(Pages.id == created_page.id)
 

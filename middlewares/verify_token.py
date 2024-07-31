@@ -14,7 +14,7 @@ def verify_token_middleware(func):
     @wraps(func)
     def decorated_func(*args, **kargs):
         try:
-            token = str(request.headers["authentication"]).removeprefix(
+            token = str(request.headers["authorization"]).removeprefix(
                 "Bearer "
             )
             decoded_token = decode_token(token)

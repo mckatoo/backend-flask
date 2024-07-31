@@ -8,7 +8,7 @@ from tests.utils import generate_mocked_user_data
 def test_unauthorized_error_on_request_without_valid_token(client):
     response = client.patch(
         "api/user/token",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         content_type="application/json",
     )
 
@@ -24,7 +24,7 @@ def test_update_user_and_return_204_status_code(client):
     access_token = existent_user.generate_tokens()["access_token"]
     response = client.patch(
         f"api/user/{existent_user.id}",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=json.dumps(mocked_new_data),
         content_type="application/json",
     )
@@ -41,7 +41,7 @@ def test_error_400_when_request_update_without_id(client):
     access_token = existent_user.generate_tokens()["access_token"]
     response = client.patch(
         "api/user",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=json.dumps({}),
         content_type="application/json",
     )
@@ -55,7 +55,7 @@ def test_error_400_when_request_update_without_data(client):
     access_token = existent_user.generate_tokens()["access_token"]
     response = client.patch(
         "api/user",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         content_type="application/json",
     )
 
@@ -68,7 +68,7 @@ def test_error_400_when_request_update_with_invalid_data(client):
     access_token = existent_user.generate_tokens()["access_token"]
     response = client.patch(
         "api/user",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=json.dumps({"invalid": "data"}),
         content_type="application/json",
     )

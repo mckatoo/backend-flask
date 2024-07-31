@@ -24,7 +24,7 @@ def test_unauthorized_error_on_request_without_valid_token(client):
     id = project.get_id()
     response = client.delete(
         f"api/project/{id}",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         content_type="application/json",
     )
 
@@ -48,7 +48,7 @@ def test_delete_project(client):
     response = client.delete(
         f"api/project/{id}",
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 204
@@ -59,7 +59,7 @@ def test_error_when_request_without_id(client):
     response = client.delete(
         "api/project",
         content_type="application/json",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
 
     assert response.status_code == 400

@@ -8,7 +8,7 @@ from tests.utils import generate_mocked_user_data
 def test_unauthorized_error_on_request_without_valid_token(client, image):
     response = client.patch(
         "api/page/about-page",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
     )
     assert response.status_code == 401
     assert response.json == {"error": "Unauthorized"}
@@ -30,7 +30,7 @@ def test_get_status_204_on_update(client):
     response = client.patch(
         f"api/page/{created_page.slug}",
         json=new_data,
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
     )
     updated_page = Pages.get_by_id(created_page.id)
 

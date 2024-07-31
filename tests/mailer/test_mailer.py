@@ -19,7 +19,7 @@ def test_unauthorized_error_on_request_without_valid_token(mock, client):
     )
     response = client.post(
         "api/mailer",
-        headers={"authentication": "Bearer invalid-token"},
+        headers={"authorization": "Bearer invalid-token"},
         data=mocked_request,
         content_type="application/json",
     )
@@ -39,7 +39,7 @@ def test_send_mail_returning_status_201_and_json(mock, client):
     )
     response = client.post(
         "api/mailer",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=mocked_request,
         content_type="application/json",
     )
@@ -55,7 +55,7 @@ def test_send_mail_with_invalid_data_returning_status_400_and_json(client):
     )
     response = client.post(
         "api/mailer",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         data=mocked_request,
         content_type="application/json",
     )
@@ -67,7 +67,7 @@ def test_send_mail_with_invalid_data_returning_status_400_and_json(client):
 def test_send_mail_without_data_returning_status_400_and_json(client):
     response = client.post(
         "api/mailer",
-        headers={"authentication": f"Bearer {access_token}"},
+        headers={"authorization": f"Bearer {access_token}"},
         content_type="application/json",
     )
 
