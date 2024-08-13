@@ -269,5 +269,5 @@ keycloak*/**/*
 keycloak_db*/**/*
 
 # Editors settings
-.vscode*/**/*
-.idea*/**/*
+.vscode/**/*
+.idea/**/*
