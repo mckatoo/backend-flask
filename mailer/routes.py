@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from configurations.mail_config import send_mail
 from middlewares.verify_token import verify_token_middleware
+from database.models.messages import Messages
 
 mailer_routes = Blueprint("mailer", __name__)
 
@@ -19,14 +20,17 @@ def send_email():
         message: str = request.json["message"]
         subject: str = "Email send from ikatoo."
 
-        send_mail(
+        message_config = dict(
             sender=sender,
             recipients=recipients,
             message=message,
             subject=subject,
         )
 
-        return jsonify({"id": "mocked_id"}), 201
+        send_mail(*message_config)
+        message = Messages.create(**message_config)
+
+        return jsonify({"id": message.id}), 201
     except Exception as e:
         if valid_email_error(str(e)):
             return jsonify({"error": "Bad Request"}), 400

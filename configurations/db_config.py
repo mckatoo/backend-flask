@@ -6,10 +6,20 @@ from database.models.projects import Projects
 from database.models.skills import Skills
 from database.models.skills_projects import SkillsProjects
 from database.models.users import Users
+from database.models.messages import Messages
 
 
 def load_db_config():
     db.connect()
     db.create_tables(
-        [Pages, Images, Projects, Skills, SkillsProjects, Users, Blacklist]
+        [
+            Pages,
+            Images,
+            Projects,
+            Skills,
+            SkillsProjects,
+            Users,
+            Blacklist,
+            Messages,
+        ]
     )
