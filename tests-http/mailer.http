@@ -1,10 +1,29 @@
 @baseUrl = {{$dotenv baseUrl}}
+@email = {{$dotenv email}}
+@username = {{$dotenv username}}
+@password = {{$dotenv password}}
+@accessToken = {{login.response.body.$.accessToken}}
 
-POST {{baseUrl}}/api/mailer HTTP/1.1
+
+###
+# @name login
+POST {{baseUrl}}/api/auth/sign-in HTTP/1.1
 Content-Type: application/json
 
 {
-    "to": "mckatoo@gmail.com",
-    "from": "mckatoo@outlook.com",
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+
+###
+# @name send_mail
+POST {{baseUrl}}/api/mailer HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "to": "{{email}}",
+    "from": "{{email}}",
     "message": "isso é um teste asdfsd"
 }

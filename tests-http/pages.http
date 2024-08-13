@@ -1,4 +1,6 @@
 @baseUrl = {{$dotenv baseUrl}}
+@username = {{$dotenv username}}
+@password = {{$dotenv password}}
 @accessToken = {{login.response.body.$.accessToken}}
 
 ###
@@ -7,8 +9,8 @@ POST {{baseUrl}}/api/auth/sign-in HTTP/1.1
 Content-Type: application/json
 
 {
-  "username": "user_487",
-  "password": "pass_f2a2d8d0-3daa-4cff-96fe-44f146590878"
+  "username": "{{username}}",
+  "password": "{{password}}"
 }
 
 ###
