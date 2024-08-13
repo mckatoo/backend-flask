@@ -30,10 +30,17 @@ def verify_token_middleware(func):
             if (
                 str(e).__contains__("HTTP_AUTHENTICATION")
                 or type(e) == jwt.DecodeError
+                or type(e) == jwt.ExpiredSignatureError
             ):
                 return jsonify(
                     {"error": "Unauthorized"},
                 ), 401
+
+            if(type(e) == KeyError):
+                return jsonify(
+                    {"error": "Bad Request"},
+                ), 400
+                
             return jsonify({"error": "Unknown Error"}), 500
 
     return decorated_func

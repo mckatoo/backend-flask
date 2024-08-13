@@ -13,12 +13,15 @@ def create_page():
     if not request.json:
         raise
     data = request.json
-    image = Images.create(url=data["image"]["url"], alt=data["image"]["alt"])
-    page = Pages.create(
-        title=data["title"],
-        description=data["description"],
-        image_id=image.id,
-    )
+    page = Pages()
+    page.title = data["title"]
+    page.description = data["description"]
+    if "image" in data and "url" in data["image"] and "alt" in data["image"]:
+        image = Images.create(
+            url=data["image"]["url"], alt=data["image"]["alt"]
+        )
+        page.image_id = image.id
+    page.save()
     return jsonify({"id": page.id, "slug": page.slug}), 201
 
 
@@ -26,17 +29,14 @@ def create_page():
 def get_page(slug: str):
     try:
         page = Pages.get(Pages.slug == slug)
-        image = Images.get_by_id(page.image_id)
-        return jsonify(
-            {
-                "title": page.title,
-                "description": page.description,
-                "image": {
-                    "url": image.url,
-                    "alt": image.alt,
-                },
+        data = {"title": page.title, "description": page.description}
+        if page.image_id:
+            image = Images.get_by_id(page.image_id)
+            data["image"] = {
+                "url": image.url,
+                "alt": image.alt,
             }
-        ), 200
+        return jsonify(data), 200
     except Exception:
         return {"error": "Unknown Error"}, 500
 
