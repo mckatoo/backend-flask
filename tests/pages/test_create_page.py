@@ -1,4 +1,4 @@
-import uuid
+from uuid import uuid4
 
 from database.models.images import Images
 from database.models.pages import Pages
@@ -8,7 +8,7 @@ from tests.utils import generate_mocked_user_data
 
 class RandomPageData:
     def __init__(self, image):
-        random_id = uuid.uuid1()
+        random_id = uuid4()
         self.title = f"{random_id} tile of page"
         self.description = f"{random_id} description of page"
         self.image = image
@@ -40,7 +40,7 @@ def test_unauthorized_error_on_request_without_valid_token(client, image):
     assert response.json == {"error": "Unauthorized"}
 
 
-def test_get_id_slug_and_status_201_on_create(client, image):
+def test_create_page(client, image):
     access_token = Users.create(
         **generate_mocked_user_data()
     ).generate_tokens()["access_token"]
@@ -57,3 +57,23 @@ def test_get_id_slug_and_status_201_on_create(client, image):
     page = Pages.get(Pages.title == data.title)
     assert response.status_code == 201
     assert response.json == {"id": page.id, "slug": page.slug}
+
+def test_create_page_with_slug(client, image):
+    access_token = Users.create(
+        **generate_mocked_user_data()
+    ).generate_tokens()["access_token"]
+    data = RandomPageData(image)
+    data.slug = f"{uuid4()}-page"
+    response = client.post(
+        "api/page",
+        json={
+            "title": data.title,
+            "slug": data.slug,
+            "description": data.description,
+            "image": {"url": data.image.url, "alt": data.image.alt},
+        },
+        headers={"authorization": f"Bearer {access_token}"},
+    )
+    page = Pages.get(Pages.title == data.title)
+    assert response.status_code == 201
+    assert response.json == {"id": page.id, "slug": data.slug}

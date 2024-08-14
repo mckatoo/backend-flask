@@ -16,5 +16,6 @@ class Pages(Model):
     image_id = ForeignKeyField(Images, backref="image", null=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        if not self.slug:
+            self.slug = slugify(self.title)
         super(Pages, self).save(*args, **kwargs)

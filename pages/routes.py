@@ -16,6 +16,8 @@ def create_page():
     page = Pages()
     page.title = data["title"]
     page.description = data["description"]
+    if "slug" in data:
+        page.slug = data["slug"]
     if "image" in data and "url" in data["image"] and "alt" in data["image"]:
         image = Images.create(
             url=data["image"]["url"], alt=data["image"]["alt"]

@@ -2,6 +2,7 @@
 @username = {{$dotenv username}}
 @password = {{$dotenv password}}
 @accessToken = {{login.response.body.$.accessToken}}
+@random = {{$randomInt 0 1000}}
 
 ###
 # @name login
@@ -14,14 +15,26 @@ Content-Type: application/json
 }
 
 ###
+# @name create_page_with_slug
+POST {{baseUrl}}/api/page HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "{{random}} Page",
+  "description": "{{random}} desc",
+  "slug": "slug-{{random}}-page"
+}
+
+###
 # @name create_page
 POST {{baseUrl}}/api/page HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "About Page",
-  "description": "About desc"
+  "title": "{{random}} Page",
+  "description": "{{random}} desc"
 }
 
 ###
